@@ -276,9 +276,11 @@ export class ConfigurationComponent implements OnInit {
       selector: { 'sendOnAccept': true }
     };
     const pin = this.userService.createPin();
+    const pass = this.userService.createPin();
     forkJoin([
       this.createUser('satellite', { 'name': 'satellite', 'password': pin, roles: [ 'learner' ], 'type': 'user' }),
-      this.couchService.put('_node/nonode@nohost/_config/satellite/pin', pin)
+      this.couchService.put('_node/nonode@nohost/_config/satellite/pin', pin),
+      this.couchService.put('_node/nonode@nohost/_config/_admin/pin', pass)
     ]).pipe(
       switchMap(res => {
         return forkJoin([
@@ -300,7 +302,7 @@ export class ConfigurationComponent implements OnInit {
           this.couchService.post('communityregistrationrequests', { ...configuration, _id: conf._id }, {
             domain: configuration.parentDomain
           }).pipe(
-            this.addUserToParentPlanet(userDetail, adminName, configuration),
+            this.addUserToParentPlanet({ ...userDetail, password: pass }, adminName, configuration),
             this.addUserToShelf(adminName, configuration),
             this.createRequestNotification(configuration)
           )
@@ -358,7 +360,7 @@ export class ConfigurationComponent implements OnInit {
   reSubmit(configuration, newConfig) {
     const { _rev: userRev, _id: userId, ...userDetail } = this.userService.get();
     const adminName = configuration.adminName;
-    return this.syncService.openConfirmation().pipe(
+    return this.syncService.getCredentials().pipe(
       switchMap((credentials) => {
         return this.update(configuration, newConfig).pipe(
           this.addUserToParentPlanet({ ...userDetail, roles: [], ...credentials }, adminName, configuration),

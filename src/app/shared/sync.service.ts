@@ -32,7 +32,7 @@ export class SyncService {
   ) {}
 
   confirmPasswordAndRunReplicators(replicators) {
-    return this.openConfirmation().pipe(switchMap((credentials) => {
+    return this.getCredentials().pipe(switchMap((credentials) => {
       return forkJoin(replicators.map((replicator) => this.sync(replicator, credentials)));
     }));
   }
@@ -45,6 +45,10 @@ export class SyncService {
 
   deleteReplicators(replicators) {
     return this.couchService.post('_replicator/_bulk_docs', { docs: replicators });
+  }
+
+  public getCredentials() {
+    return of({ name: this.userService.getConfig().adminName, password: this.userService.getConfig().adminPass });
   }
 
   public openConfirmation() {

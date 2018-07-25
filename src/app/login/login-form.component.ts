@@ -145,7 +145,8 @@ export class LoginFormComponent {
     if (environment.test || localAdminName !== name || localConfig.planetType === 'center') {
       return obsArr;
     }
-    obsArr.push(this.createParentSession({ 'name': this.userService.getConfig().adminName, 'password': password }));
+    const adminCredentials = { 'name': this.userService.getConfig().adminName, 'password': this.userService.getConfig().adminPass };
+    obsArr.push(this.createParentSession(adminCredentials));
     if (localConfig.registrationRequest === 'pending') {
       obsArr.push(this.getConfigurationSyncDown(localConfig, { name, password }));
     }

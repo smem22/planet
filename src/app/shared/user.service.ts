@@ -73,15 +73,17 @@ export class UserService {
         if (!environment.test) {
           return forkJoin([
             this.couchService.allDocs('configurations'),
-            this.getShelf()
+            this.getShelf(),
+            this.getAdminPass()
           ]);
         }
-        return of([ [], {} ]);
+        return of([ [], {}, false ]);
       }),
-      switchMap(([ configuration, shelf ]: [ any, any ]) => {
+      switchMap(([ configuration, shelf, adminPass ]: [ any, any, any ]) => {
         if (configuration.length > 0) {
           this.configuration = configuration[0];
           this.shelf = shelf;
+          this.configuration.adminPass = adminPass;
         }
         return of(true);
       }));
@@ -171,6 +173,13 @@ export class UserService {
       this.shelf = { ...newShelf, '_rev': res.rev };
       return this.shelf;
     }));
+  }
+
+  getAdminPass() {
+    if (this.user.isUserAdmin) {
+      return this.couchService.get('_node/nonode@nohost/_config/satellite/pin');
+    }
+    return of(false);
   }
 
   createPin() {
