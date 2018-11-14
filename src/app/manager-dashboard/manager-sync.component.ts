@@ -82,7 +82,7 @@ export class ManagerSyncComponent implements OnInit {
         { source: this.planetConfiguration.code },
         { parentCode: this.planetConfiguration.code }
       ] } },
-      { db: 'notifications', selector: { target: this.planetConfiguration.code } },
+      { db: 'notifications', selector: { target: this.planetConfiguration.code, targetParent: this.planetConfiguration.parentCode } },
       { db: 'submissions', selector: { source: this.planetConfiguration.code } }
     ];
     const internalList = [
