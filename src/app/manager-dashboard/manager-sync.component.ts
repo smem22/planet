@@ -78,7 +78,10 @@ export class ManagerSyncComponent implements OnInit {
       { db: 'submissions', selector: { source: this.planetConfiguration.code } }
     ];
     const pullList = [
-      { db: 'feedback', selector: { source: this.planetConfiguration.code } },
+      { db: 'feedback', selector: { '$or': [
+        { source: this.planetConfiguration.code },
+        { parentCode: this.planetConfiguration.code }
+      ] } },
       { db: 'notifications', selector: { target: this.planetConfiguration.code } },
       { db: 'submissions', selector: { source: this.planetConfiguration.code } }
     ];
