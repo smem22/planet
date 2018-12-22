@@ -7,6 +7,7 @@ import { Subject } from 'rxjs';
 import { SubmissionsService } from './submissions.service';
 import { UserService } from '../shared/user.service';
 import { findDocuments } from '../shared/mangoQueries';
+import { CSVService } from '../shared/planet-csv.service';
 
 @Component({
   templateUrl: './submissions.component.html',
@@ -38,7 +39,8 @@ export class SubmissionsComponent implements OnInit, AfterViewInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private submissionsService: SubmissionsService,
-    private userService: UserService
+    private userService: UserService,
+    private csvService: CSVService
   ) { }
 
   ngOnInit() {
@@ -94,6 +96,7 @@ export class SubmissionsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   applyFilter(filterValue: string) {
     this.submissions.filter = filterValue || this.dropdownsFill();
+    console.log(this.submissions.data);
   }
 
   onFilterChange(filterValue: string, field: string) {
@@ -134,6 +137,10 @@ export class SubmissionsComponent implements OnInit, AfterViewInit, OnDestroy {
       return 'view';
     }
     return listMode;
+  }
+
+  exportToCSV() {
+    this.csvService.toCSV(this.submissions.data, ['name', 'type', 'answers'])
   }
 
 }

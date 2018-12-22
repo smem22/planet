@@ -20,6 +20,7 @@
   <mat-form-field class="font-size-1">
     <input matInput (keyup)="applyFilter($event.target.value)" i18n-placeholder placeholder="Search">
   </mat-form-field>
+  <a (click)="exportToCSV()">CSV</a>
 </mat-toolbar>
 
 <div class="space-container primary-link-hover">
