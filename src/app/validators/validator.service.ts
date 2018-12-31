@@ -91,7 +91,11 @@ export class ValidatorService {
   }
 
   public notDateInPast$(ac: AbstractControl): Observable<ValidationErrors | null> {
-    return this.couchService.currentTime().pipe(map(date => ac.value > date ? null : ({ dateInPast: true })));
+    return this.couchService.currentTime().pipe(map(date => {
+      const today = new Date(date);
+      const input = new Date(ac.value);
+      return input.getFullYear() + '.' + input.getMonth() + '.' + input.getDate() >= today.getFullYear() + '.' + today.getMonth() + '.' + today.getDate() ? null : ({ dateInPast: true });
+    }));
   }
 
 }
