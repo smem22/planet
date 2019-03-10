@@ -138,17 +138,23 @@ export class ResourcesAddComponent implements OnInit {
         const existingData = this.deleteAttachment ? { _id, _rev } : this.existingResource;
         // Start with empty object so this.resourceForm.value does not change
         const newResource = Object.assign({}, existingData, this.resourceForm.value, resource);
-        const message = newResource.title + (this.pageType === 'Update' ?  ' Updated Successfully' : ' Added');
-        this.updateResource(newResource).pipe(switchMap((res) => {
-          if (file) {
-            const opts = { headers: { 'Content-Type': file.type } };
-            return this.couchService.putAttachment(this.dbName + '/' + res.id + '/' + file.name + '?rev=' + res.rev, file, opts);
-          }
-          return of({});
-        })).subscribe(() => {
+        console.log(existingData);
+        console.log(newResource);
+        if(JSON.stringify(existingData) !== JSON.stringify(newResource) ){
+          const message = newResource.title + (this.pageType === 'Update' ?  ' Updated Successfully' : ' Added');
+          this.updateResource(newResource).pipe(switchMap((res) => {
+            if (file) {
+              const opts = { headers: { 'Content-Type': file.type } };
+              return this.couchService.putAttachment(this.dbName + '/' + res.id + '/' + file.name + '?rev=' + res.rev, file, opts);
+            }
+            return of({});
+          })).subscribe(() => {
+            this.router.navigate([ '/resources' ]);
+            this.planetMessageService.showMessage(message);
+          }, (err) => this.planetMessageService.showAlert('There was an error with this resource'));
+        }else {
           this.router.navigate([ '/resources' ]);
-          this.planetMessageService.showMessage(message);
-        }, (err) => this.planetMessageService.showAlert('There was an error with this resource'));
+        }
       });
     } else {
       Object.keys(this.resourceForm.controls).forEach(field => {
