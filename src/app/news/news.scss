@@ -2,7 +2,7 @@ $max-width: 640px;
 
 .view-container {
   display: grid;
-  grid-template-rows: auto 1fr;
+  grid-template-rows: auto min-content;
   grid-template-areas: 'form' 'news';
   justify-content: center;
   grid-template-columns: minmax(auto, $max-width);
