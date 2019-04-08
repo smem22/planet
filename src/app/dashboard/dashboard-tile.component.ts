@@ -18,9 +18,6 @@ export class DashboardTileComponent implements OnInit {
   @Input() emptyLink = '/';
   @Input() shelfName: string;
   @ViewChild('items') itemDiv: ElementRef;
-  mockItems = Array(100).fill(0).map((val, ind, arr) => {
-    return { title: 'Item ' + ind, link: '/' };
-  });
 
   constructor(
     private planetMessageService: PlanetMessageService,
@@ -28,11 +25,7 @@ export class DashboardTileComponent implements OnInit {
     private teamsService: TeamsService
   ) { }
 
-  ngOnInit() {
-    if (!this.itemData) {
-      this.itemData = this.mockItems;
-    }
-  }
+  ngOnInit() {}
 
   removeFromShelf(event, item: any) {
     event.stopPropagation();
