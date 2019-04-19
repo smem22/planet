@@ -139,7 +139,7 @@ export class ResourcesAddComponent implements OnInit {
         this.updateResource(newResource).pipe(switchMap((res) => {
           if (file) {
             const opts = { headers: { 'Content-Type': file.type } };
-            return this.couchService.putAttachment(this.dbName + '/' + res.id + '/' + file.name + '?rev=' + res.rev, file, opts);
+            return this.couchService.putAttachment(file);
           }
           return of({});
         })).subscribe(() => {

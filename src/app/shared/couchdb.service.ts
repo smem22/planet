@@ -62,8 +62,9 @@ export class CouchService {
     return this.couchDBReq('delete', db, this.setOpts(opts));
   }
 
-  putAttachment(db: string, file: FormData, opts?: any) {
-    return this.couchDBReq('put', db, this.setOpts(opts), file);
+  putAttachment(file: FormData) {
+    const headers = new HttpHeaders().set('Content-Type', 'multipart/form-data');
+    return this.http.post(`${this.baseUrl}/upload`, file, { headers });
   }
 
   updateDocument(db: string, doc: any, opts?: any) {
