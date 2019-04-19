@@ -64,7 +64,8 @@ export class CouchService {
 
   putAttachment(file: FormData) {
     const headers = new HttpHeaders().set('Content-Type', 'multipart/form-data');
-    return this.http.post(`${this.baseUrl}/upload`, file, { headers });
+    const baseUrl = this.baseUrl.split(':')[0].split('/db')[0];
+    return this.http.post(`${baseUrl}/upload`, file, { headers });
   }
 
   updateDocument(db: string, doc: any, opts?: any) {
