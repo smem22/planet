@@ -10,7 +10,7 @@ import { PlanetMessageService } from '../shared/planet-message.service';
 import { UserService } from '../shared/user.service';
 import {
   filterSpecificFields, composeFilterFunctions, filterTags, sortNumberOrString, filterAdvancedSearch,
-  filterShelf, filteredItemsInPage, createDeleteArray, filterSpecificFieldsByWord, removeFilteredFromSelection
+  filterShelf, createDeleteArray, filterSpecificFieldsByWord, removeFilteredFromSelection
 } from '../shared/table-helpers';
 import { ResourcesService } from './resources.service';
 import { environment } from '../../environments/environment';
