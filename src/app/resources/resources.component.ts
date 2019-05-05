@@ -9,8 +9,8 @@ import { Subject, of, combineLatest } from 'rxjs';
 import { PlanetMessageService } from '../shared/planet-message.service';
 import { UserService } from '../shared/user.service';
 import {
-  filterSpecificFields, composeFilterFunctions, filterTags, sortNumberOrString,
-  filterAdvancedSearch, filterShelf, filteredItemsInPage, createDeleteArray, filterSpecificFieldsByWord
+  filterSpecificFields, composeFilterFunctions, filterTags, sortNumberOrString, filterAdvancedSearch,
+  filterShelf, filteredItemsInPage, createDeleteArray, filterSpecificFieldsByWord, removeFilteredFromSelection
 } from '../shared/table-helpers';
 import { ResourcesService } from './resources.service';
 import { environment } from '../../environments/environment';
@@ -62,7 +62,7 @@ export class ResourcesComponent implements OnInit, AfterViewInit, OnDestroy {
     // When setting the titleSearch, also set the resource filter
     this.resources.filter = value ? value : this.dropdownsFill();
     this._titleSearch = value;
-    this.removeFilteredFromSelection();
+    removeFilteredFromSelection(this.paginator, this.resources.filteredData, this.selection);
   }
   private _myLibraryFilter: { value: 'on' | 'off' } = { value: 'off' };
   get myLibraryFilter(): 'on' | 'off' { return this._myLibraryFilter.value; }
@@ -129,7 +129,6 @@ export class ResourcesComponent implements OnInit, AfterViewInit, OnDestroy {
     this.tagFilter.valueChanges.subscribe((tags) => {
       this.tagFilterValue = tags;
       this.resources.filter = this.resources.filter || ' ';
-      this.removeFilteredFromSelection();
     });
     this.selection.onChange.subscribe(({ source }) => {
       this.countSelectedNotAdded(source.selected);
@@ -145,19 +144,6 @@ export class ResourcesComponent implements OnInit, AfterViewInit, OnDestroy {
       resource.canManage = this.currentUser.isUserAdmin ||
         (resource.addedBy === this.currentUser.name && resource.sourcePlanet === this.planetConfiguration.code);
       return { ...resource, libraryInfo: myLibraryIndex > -1 };
-    });
-  }
-
-  removeFilteredFromSelection() {
-    if (!this.paginator) {
-      return;
-    }
-    const itemsInPage = filteredItemsInPage(this.resources.filteredData, this.paginator.pageIndex, this.paginator.pageSize);
-    this.selection.selected.forEach((selectedId) => {
-      const notInSelection  = itemsInPage.find((filtered: any) =>  filtered._id === selectedId ) === undefined;
-      if (notInSelection) {
-        this.selection.deselect(selectedId);
-      }
     });
   }
 
@@ -268,7 +254,6 @@ export class ResourcesComponent implements OnInit, AfterViewInit, OnDestroy {
 
   libraryToggle(resourceIds, type) {
     this.resourcesService.libraryAddRemove(resourceIds, type).subscribe((res) => {
-      this.removeFilteredFromSelection();
       this.countSelectedNotAdded(this.selection.selected);
     }, (error) => ((error)));
   }
@@ -291,7 +276,6 @@ export class ResourcesComponent implements OnInit, AfterViewInit, OnDestroy {
   onSearchChange({ items, category }) {
     this.searchSelection[category] = items;
     this.titleSearch = this.titleSearch;
-    this.removeFilteredFromSelection();
   }
 
   resetFilter() {
@@ -354,7 +338,6 @@ export class ResourcesComponent implements OnInit, AfterViewInit, OnDestroy {
 
   toggleMyLibrary() {
     this.myLibraryFilter = this.myLibraryFilter === 'on' ? 'off' : 'on';
-    this.removeFilteredFromSelection();
   }
 
 }

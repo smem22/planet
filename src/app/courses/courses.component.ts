@@ -10,7 +10,8 @@ import { UserService } from '../shared/user.service';
 import { Subject, of, forkJoin } from 'rxjs';
 import { switchMap, takeUntil, map } from 'rxjs/operators';
 import {
-  filterDropdowns, filterSpecificFields, composeFilterFunctions, sortNumberOrString, dropdownsFill, createDeleteArray
+  filterDropdowns, filterSpecificFields, composeFilterFunctions, sortNumberOrString,
+  dropdownsFill, createDeleteArray, removeFilteredFromSelection
 } from '../shared/table-helpers';
 import * as constants from './constants';
 import { debug } from '../debug-operator';
@@ -65,6 +66,7 @@ export class CoursesComponent implements OnInit, AfterViewInit, OnDestroy {
     // When setting the titleSearch, also set the courses filter
     this.courses.filter = value ? value : this.dropdownsFill();
     this._titleSearch = value;
+    removeFilteredFromSelection(this.paginator, this.courses.filteredData, this.selection);
   }
   user = this.userService.get();
   userShelf: any = [];
@@ -274,6 +276,7 @@ export class CoursesComponent implements OnInit, AfterViewInit, OnDestroy {
     this.filter[field] = filterValue === 'All' ? '' : filterValue;
     // Force filter to update by setting it to a space if empty
     this.courses.filter = this.courses.filter ? this.courses.filter : ' ';
+    removeFilteredFromSelection(this.paginator, this.courses.filteredData, this.selection);
   }
 
   resetSearch() {
