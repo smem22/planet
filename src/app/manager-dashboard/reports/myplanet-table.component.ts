@@ -1,5 +1,6 @@
 import { Component, OnChanges, AfterViewInit, ViewChild, Input } from '@angular/core';
 import { MatTableDataSource, MatPaginator } from '@angular/material';
+import { StateService } from '../../shared/state.service';
 
 @Component({
   selector: 'planet-myplanet-table',
@@ -12,6 +13,14 @@ export class MyPlanetTableComponent implements OnChanges, AfterViewInit {
   displayedColumns = [ 'id', 'name', 'lastSynced', 'version' ];
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
+
+  constructor(
+    private stateService: StateService
+  ) {
+    if (this.stateService.configuration.planetType === 'center') {
+      this.displayedColumns.push('createdOn');
+    }
+  }
 
   ngOnChanges() {
     this.myPlanets.data = this.data;
