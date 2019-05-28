@@ -175,7 +175,7 @@ export class PlanetTagInputDialogComponent {
 
   toggleSubcollection(event, tagId) {
     event.stopPropagation();
-    const newState = !this.subcollectionIsOpen.get(tagId)
+    const newState = !this.subcollectionIsOpen.get(tagId);
     this.subcollectionIsOpen.clear();
     this.subcollectionIsOpen.set(tagId, newState);
   }
